@@ -8,7 +8,7 @@ Have you everwished TicTacToe was a more compelling competitive experience? Adva
 
 ### Design
 
-![Mock](voterMockUI.jpg)
+![Mock](Mock-tictactoe.png)
 
 ### Key features
 
