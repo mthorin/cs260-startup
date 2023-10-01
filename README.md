@@ -35,3 +35,16 @@ I am going to use the required technologies in the following ways.
 - **Login** - Register and login users. Credentials securely stored in database. Can't play unless authenticated.
 - **WebSocket** - As each user plays, their moves are updated to other player.
 - **React** - Application ported to use the React web framework.
+
+### HTML deliverable
+
+I am going to use the required technologies in the following ways.
+
+- **HTML pages** - Two HTML pages for login, game select, and playing.
+- **Links** - Login page links to game select, game select links to play.
+- **Text** - Game selection represented by textual description
+- **Service Calls** - Javascript will handle the game code on the play page
+- **Images** - One image of a tic tac toe board included
+- **Login** - Input box and submit button for login
+- **Database** - Game information represents database information
+- **WebSocket** - Realtime game information will be updated through web socket
