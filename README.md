@@ -38,8 +38,6 @@ I am going to use the required technologies in the following ways.
 
 ### HTML deliverable
 
-I am going to use the required technologies in the following ways.
-
 - **HTML pages** - Two HTML pages for login, game select, and playing.
 - **Links** - Login page links to game select, game select links to play.
 - **Text** - Game selection represented by textual description
