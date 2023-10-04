@@ -52,6 +52,6 @@ I am going to use the required technologies in the following ways.
 - **Header, Footer, and Main** - Distinct style
 - **Navigation Elements** - Colors change on hover, no underline 
 - **Responsive to Window Resizing** - Header and footer move, and disappear appropriately
-- **Application Elements** -
-- **Application Text Content**  -
-- **Application Images** -
+- **Application Elements** - Used good contrast, good layout for game select screen
+- **Application Text Content**  - Consistent fonts
+- **Application Images** - 
