@@ -46,3 +46,12 @@ I am going to use the required technologies in the following ways.
 - **Login** - Input box and submit button for login
 - **Database** - Game information represents database information
 - **WebSocket** - Realtime game information will be updated through web socket
+
+### CSS deliverable
+
+- **Header, Footer, and Main** - Distinct style
+- **Navigation Elements** - Colors change on hover, no underline 
+- **Responsive to Window Resizing** - Header and footer move, and disappear appropriately
+- **Application Elements** - Used good contrast, good layout for game select screen
+- **Application Text Content**  - Consistent fonts
+- **Application Images** - Left unchanged because I'm not sure how the Javascript will fit in yet.
