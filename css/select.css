@@ -64,7 +64,9 @@ footer a {
 .card {
   border: thick black solid ;
   border-radius: 1em;
-  background: hsl(30, 50%, 70%);
+  background: #202020 !important;
+  align-items: center;
+  line-height: 47px;
 }
 
 .logout {
