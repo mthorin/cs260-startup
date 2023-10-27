@@ -55,3 +55,10 @@ I am going to use the required technologies in the following ways.
 - **Application Elements** - Used good contrast, good layout for game select screen
 - **Application Text Content**  - Consistent fonts
 - **Application Images** - Left unchanged because I'm not sure how the Javascript will fit in yet.
+
+## JavaScript deliverable
+
+- **login** - Saves username for use on future pages
+- **database** - Game information and current game status saved in local storage
+- **WebSocket** - setInterval function periodically sends a random message from the "opponent". This will be replaced with WebSocket later.
+- **Application logic** - First turn of the game id fully playable.
