@@ -60,5 +60,5 @@ I am going to use the required technologies in the following ways.
 
 - **login** - Saves username for use on future pages
 - **database** - Game information and current game status saved in local storage
-- **WebSocket** - setInterval function periodically sends a random message from the "opponent". This will be replaced with WebSocket later.
+- **WebSocket** - setInterval function periodically checks for a move from the opponent. This will be replaced with WebSocket later.
 - **Application logic** - First turn of the game is fully playable.
