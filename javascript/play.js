@@ -1,9 +1,9 @@
 const Tim = {
   yourTurn: true,
   board: [
-    [[0,0,2],
+    [[1,0,0],
      [0,0,0],
-     [1,0,0]],
+     [2,0,0]],
     [[0,0,0],
      [0,0,0],
      [0,0,0]],
@@ -17,15 +17,15 @@ const Tim = {
 const Hannah = {
   yourTurn: false,
   board: [
-    [[1,0,0],
-     [0,0,0],
+    [[1,0,2],
+     [0,0,1],
      [0,0,2]],
-    [[0,0,0],
-     [1,2,1],
-     [2,0,0]],
-    [[2,1,2],
-     [2,1,0],
-     [0,1,0]]],
+    [[0,1,2],
+     [0,2,1],
+     [0,1,0]],
+    [[0,2,0],
+     [0,0,1],
+     [2,0,0]]],
   currentPieces: [0,0,0,0,0,0],
   oppCurrentPieces: [0,0,0,0,0,0]
 }
@@ -34,10 +34,10 @@ const Billy = {
   yourTurn: true,
   board: [
     [[0,0,0],
-     [0,2,0],
+     [0,0,0],
      [0,0,0]],
     [[0,0,0],
-     [0,0,0],
+     [2,0,0],
      [0,0,0]],
     [[0,0,0],
      [0,0,0],
@@ -90,6 +90,7 @@ class Game {
   }
 
   getGameInfo(oppName){
+    //// TODO: Pull from database
     if (oppName === "Tim") {
       const gameInfo = Tim;
       this.setGame(gameInfo);
@@ -102,8 +103,66 @@ class Game {
     }
   }
 
+  checkForWin() {
+    //// TODO:
+  }
+
+  updatePieces(){
+    for(let i = 0; i < 6; i++){
+      if(this.currentPieces[i] === 0){
+        document.getElementById(this.decodePiece(i + 1)).src = "empty.png";
+      }
+    }
+
+    for(let i = 0; i < 6; i++){
+      if(this.oppCurrentPieces[i] === 0){
+        document.getElementById(this.decodeOppPiece(i)).src = "empty.png";
+      }
+    }
+  }
+
+  updateBoard(){
+    for(let x = 0; x < 3; x++) {
+      for(let y = 0; y < 3; y++) {
+        let piece = this.checkForPiece(x,y);
+        switch(piece[0]){
+          case 1:
+            document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "37px";
+            break;
+          case 2:
+            document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "25px";
+            break;
+          case 3:
+            document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "";
+            break;
+        }
+        switch(piece[1]){
+          case 0:
+            document.getElementById(this.decodeBoardByPos(x, y)).src  = "empty.png";
+            break;
+          case 1:
+            document.getElementById(this.decodeBoardByPos(x, y)).src  = "redcircle.png";
+            break;
+          case 2:
+            document.getElementById(this.decodeBoardByPos(x, y)).src  = "bluecircle.png";
+            break;
+        }
+      }
+    }
+  }
+
   setGame(gameInfo) {
-    //Load info from object or database
+    this.yourTurn = gameInfo.yourTurn;
+    this.board = gameInfo.board;
+    this.currentPieces = gameInfo.currentPieces;
+    this.oppCurrentPieces = gameInfo.oppCurrentPieces;
+
+    this.updateBoard();
+    this.updatePieces();
+
+    if(!this.yourTurn){
+      this.printError(this.oppName + "'s Turn");
+    }
   }
 
   printError(message){
@@ -171,7 +230,7 @@ class Game {
         this.toggleBorder(document.getElementById(previousID), false);
 
         if (selectedOccupant[0] > occupant[0]){
-          this.moveBoardToBoard(x_sel, y_sel, x, y);
+          this.moveBoardToBoard(x_sel, y_sel, selectedOccupant, x, y, occupant);
         } else {
           this.printError("Invalid Move");
         }
@@ -180,8 +239,49 @@ class Game {
     }
   }
 
-  moveBoardToBoard(old_x, old_y, x, y) {
+  moveBoardToBoard(old_x, old_y, old_info, x, y, info) {
+    document.getElementById(this.decodeBoardByPos(x, y)).src  = "redcircle.png";
+    switch(old_info[0]){
+      case 1:
+        board[old_x][old_y][2] = 0;
+        board[x][y][2] = 1;
+        document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "37px";
+        break;
+      case 2:
+        board[old_x][old_y][1] = 0;
+        board[x][y][1] = 1;
+        document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "25px";
+        break;
+      case 3:
+        board[old_x][old_y][0] = 0;
+        board[x][y][0] = 1;
+        document.getElementById(this.decodeBoardByPos(x, y)).style.padding = "";
+        break;
+    }
 
+    new_top = this.checkForPiece(old_x, old_y);
+    switch(new_top[0]){
+      case 1:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).style.padding = "37px";
+        break;
+      case 2:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).style.padding = "25px";
+        break;
+      case 3:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).style.padding = "";
+        break;
+    }
+    switch(new_top[1]){
+      case 0:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).src  = "empty.png";
+        break;
+      case 1:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).src  = "redcircle.png";
+        break;
+      case 2:
+        document.getElementById(this.decodeBoardByPos(old_x, old_y)).src  = "bluecircle.png";
+        break;
+    }
     this.endTurn();
   }
 
@@ -225,6 +325,7 @@ class Game {
   }
 
   endTurn(){
+    this.checkForWin();
     this.yourTurn = false;
     this.printError(this.oppName + "'s turn");
   }
@@ -410,6 +511,23 @@ class Game {
         return "right-sml-2";
       case 6:
         return "right-sml-3";
+    }
+  }
+
+  decodeOppPiece(index) {
+    switch(index){
+      case 0:
+        return "left-big-1";
+      case 1:
+        return "left-med-1";
+      case 2:
+        return "left-med-2";
+      case 3:
+        return "left-sml-1";
+      case 4:
+        return "left-sml-2";
+      case 5:
+        return "left-sml-3";
     }
   }
 }
