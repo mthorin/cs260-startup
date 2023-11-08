@@ -65,8 +65,8 @@ I am going to use the required technologies in the following ways.
 
 ## Service deliverable
 
-- **Node.js/Express HTTP service**
-- **Static middleware for frontend**
+- **Node.js/Express HTTP service** ✅
+- **Static middleware for frontend** ✅
 - **Calls to third party endpoints** - Displays quotes on the login page.
-- **Backend service endpoints** - Placeholders for login that stores the current user on the server. Endpoints for taking your turn.
-- **Frontend calls service endpoints** - Fetch used to pull game info from the server.
+- **Backend service endpoints** - Placeholders for login, retrieving current games and game state from the database, and updating the game state at the end of a turn.
+- **Frontend calls service endpoints** ✅
