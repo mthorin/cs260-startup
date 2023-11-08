@@ -68,5 +68,5 @@ I am going to use the required technologies in the following ways.
 - **Node.js/Express HTTP service** ✅
 - **Static middleware for frontend** ✅
 - **Calls to third party endpoints** - Displays quotes on the login page.
-- **Backend service endpoints** - Placeholders for login, retrieving current games and game state from the database, and updating the game state at the end of a turn.
+- **Backend service endpoints** - Placeholders for retrieving current games and game state from the database and updating the game state at the end of a turn.
 - **Frontend calls service endpoints** ✅
