@@ -62,3 +62,11 @@ I am going to use the required technologies in the following ways.
 - **database** - Game information and current game status saved in local storage
 - **WebSocket** - setInterval function periodically checks for a move from the opponent. This will be replaced with WebSocket later.
 - **Application logic** - First turn of the game is fully playable.
+
+## Service deliverable
+
+- **Node.js/Express HTTP service** ✅
+- **Static middleware for frontend** ✅
+- **Calls to third party endpoints** - Displays quotes on the login page.
+- **Backend service endpoints** - Placeholders for retrieving current games and game state from the database and updating the game state at the end of a turn.
+- **Frontend calls service endpoints** ✅
