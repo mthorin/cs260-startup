@@ -70,3 +70,9 @@ I am going to use the required technologies in the following ways.
 - **Calls to third party endpoints** - Displays quotes on the login page.
 - **Backend service endpoints** - Placeholders for retrieving current games and game state from the database and updating the game state at the end of a turn.
 - **Frontend calls service endpoints** ✅
+
+## DB deliverable
+
+- **MongoDB Atlas database created** - ✅
+- **Endpoints for data** - Endpoints now store and retrieves game data from the database.
+- **Stores data in MongoDB** - ✅
