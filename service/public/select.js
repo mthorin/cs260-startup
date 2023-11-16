@@ -10,8 +10,8 @@ async function loadGames() {
 
   const gamesDisplay = document.getElementById('games');
 
-  if (games.length) {
-    games.forEach((game) => {
+  if (await games.length) {
+    await games.forEach((game) => {
       let opp = "Unknown";
       let yourTurn = false;
 
@@ -69,13 +69,13 @@ async function loadGameInfo() {
   let games = [];
   try {
     const response = await fetch('/api/login/' + getPlayerName());
-    const gamesJSON = await response.json();
-    games = gamesJSON.parse();
+    games = await response.json();
 
     // Save the games in case we go offline
-    localStorage.setItem("games", gamesJSON);
-  } catch {
+    localStorage.setItem("games", games);
+  } catch (e)  {
     // If there was an error then just use the last saved scores
+    console.log(e);
     const gamesJSON = localStorage.getItem('games');
     if (gamesJSON) {
       games = JSON.parse(gamesJSON);
