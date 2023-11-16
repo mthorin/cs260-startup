@@ -76,3 +76,10 @@ I am going to use the required technologies in the following ways.
 - **MongoDB Atlas database created** - ✅
 - **Endpoints for data** - Endpoints now store and retrieves game data from the database.
 - **Stores data in MongoDB** - ✅
+
+## Login deliverable
+
+- **User registration** - Creates a new account in the database.
+- **User authentication** - Stores the votes under the same user if the user already exists.
+- **Use MongoDB to store credentials** - Storesthe user and win loss record.
+- **Restricts functionality** - Select and Play screens cannot be accessed unless logged in.
