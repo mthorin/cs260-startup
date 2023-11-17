@@ -1,22 +1,14 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const bcrypt = require('bcrypt');
+const uuid = require('uuid');
 const config = require('./dbConfig.json');
 //const uri = "mongodb+srv://${config.userName}:${config.password}@${config.hostname}/?retryWrites=true&w=majority";
 const uri = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-/**
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-*/
 const client = new MongoClient(uri);
 
 const db = client.db('startup');
 const gameCollection = db.collection('games');
+const userCollection = db.collection('users');
 
 (async function testConnection() {
   await client.connect();
@@ -26,6 +18,30 @@ const gameCollection = db.collection('games');
   console.log(`Unable to connect to database with ${uri} because ${ex.message}`);
   process.exit(1);
 });
+
+function getUser(username) {
+  return userCollection.findOne({ username: username });
+}
+
+function getUserByToken(token) {
+  return userCollection.findOne({ token: token });
+}
+
+async function createUser(username, password) {
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    username: username,
+    password: passwordHash,
+    token: uuid.v4(),
+    win: 0,
+    loss: 0,
+    //color: "red",
+  };
+  await userCollection.insertOne(user);
+
+  return user;
+}
 
 async function getGames(username) {
   //Comment put later
@@ -121,4 +137,4 @@ async function updateGameState(username, opponent, gameState) {
   await gameCollection.findOneAndReplace(query, game);
 }
 
-module.exports = { getGames, getGameState, updateGameState };
+module.exports = { getGames, getGameState, updateGameState , getUser, getUserByToken, createUser};

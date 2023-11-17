@@ -68,7 +68,7 @@ function getPlayerName() {
 async function loadGameInfo() {
   let games = [];
   try {
-    const response = await fetch('/api/login/' + getPlayerName());
+    const response = await fetch('/api/game/list/' + getPlayerName());
     games = await response.json();
 
     // Save the games in case we go offline

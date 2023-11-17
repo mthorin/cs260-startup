@@ -1,6 +1,7 @@
 function logout() {
-  localStorage.setItem("userName", null);
-  //Game data will be pulled from database before being stored in the local storage
-  localStorage.setItem("games", null);
-  //window.location.href = "select.html";
+  localStorage.removeItem('userName');
+  localStorage.removeItem('games');
+  fetch(`/api/auth/logout`, {
+    method: 'delete',
+  }).then(() => (window.location.href = '/'));
 }
