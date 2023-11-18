@@ -53,7 +53,7 @@ async function loadGames() {
   const newGame = document.createElement('a');
   newGame.textContent = 'New Game';
   newGame.className = "nav-link";
-  newGame.href = "play.html?opp=none";
+  newGame.href = "newgame.html";
   const newGameButton = document.createElement('div');
   newGameButton.className = "card";
   //newGameButton.setAttribute("onclick", launchNewGame);

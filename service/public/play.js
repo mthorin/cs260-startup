@@ -51,7 +51,143 @@ class Game {
   }
 
   checkForWin() {
-    //// TODO:
+    let player1Win = false;
+    let player2Win = false;
+    for (let i = 0; i < 3; i++) {
+      //Rows
+      let lastNum = 0;
+      let renzoku = 0;
+      for (let j = 0; j < 3; j++) {
+        const piece = this.checkForPiece(i, j);
+        if (piece[1] === lastNum){
+          renzoku++;
+        } else {
+          renzoku = 0;
+        }
+        lastNum = piece[1];
+      }
+      if (renzoku === 2 && lastNum === 1){
+        player1Win = true;
+      }
+      if (renzoku === 2 && lastNum === 2){
+        player2Win = true;
+      }
+      //Columns
+      lastNum = 0;
+      renzoku = 0;
+      for (let j = 0; j < 3; j++) {
+        const piece = this.checkForPiece(j, i);
+        if (piece[1] === lastNum){
+          renzoku++;
+        } else {
+          renzoku = 0;
+        }
+        lastNum = piece[1];
+      }
+      if (renzoku === 2 && lastNum === 1){
+        player1Win = true;
+      }
+      if (renzoku === 2 && lastNum === 2){
+        player2Win = true;
+      }
+    }
+
+    //Diagonal 1
+    let lastNum = 0;
+    let renzoku = 0;
+    for (let i = 0; i < 3; i++) {
+      const piece = this.checkForPiece(i, i);
+      if (piece[1] === lastNum){
+        renzoku++;
+      } else {
+        renzoku = 0;
+      }
+      lastNum = piece[1];
+    }
+    if (renzoku === 2 && lastNum === 1){
+      player1Win = true;
+    }
+    if (renzoku === 2 && lastNum === 2){
+      player2Win = true;
+    }
+
+    //Diagonal 2
+    lastNum = 0;
+    renzoku = 0;
+    for (let i = 0; i < 3; i++) {
+      const piece = this.checkForPiece(i, 2 - i);
+      if (piece[1] === lastNum){
+        renzoku++;
+      } else {
+        renzoku = 0;
+      }
+      lastNum = piece[1];
+    }
+    if (renzoku === 2 && lastNum === 1){
+      player1Win = true;
+    }
+    if (renzoku === 2 && lastNum === 2){
+      player2Win = true;
+    }
+
+    if(player1Win && !player2Win){
+      this.winFor(1);
+      return true;
+    } else if (player2Win && !player1Win){
+      this.winFor(2);
+      return true;
+    }
+    return false;
+  }
+
+  forfeit(){
+    this.yourTurn = false;
+    this.winFor(2);
+    //Websocket notify other player
+  }
+
+  winFor(playerNum){
+    //HIDE forfeit button
+    this.removeGame();
+    if (playerNum === 1){
+      this.printError("You Win!");
+      this.addWin(this.getPlayerName());
+      this.addLoss(this.oppName)
+    } else {
+      this.printError(this.oppName + " Wins!");
+      this.addWin(this.oppName);
+      this.addLoss(this.getPlayerName());
+    }
+  }
+
+  addLoss(player){
+    fetch('/api/user/loss', {
+      method: 'post',
+      body: JSON.stringify({ username: player}),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+  }
+
+  addWin(player){
+    fetch('/api/user/win', {
+      method: 'post',
+      body: JSON.stringify({ username: player}),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+  }
+
+  removeGame(){
+    fetch('/api/game/end', {
+      method: 'post',
+      body: JSON.stringify({ player1: this.getPlayerName(), player2: this.oppName}),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
   }
 
   updatePieces(){
@@ -106,10 +242,31 @@ class Game {
 
     this.updateBoard();
     this.updatePieces();
+    this.updateWinLoss();
 
     if(!this.yourTurn){
       this.printError(this.oppName + "'s Turn");
     }
+  }
+
+  async updateWinLoss(){
+    const wlratio = await this.getWinLoss(this.getPlayerName());
+    const oppwlratio = await this.getWinLoss(this.oppName);
+
+    const wlratioEl = document.querySelector('.wlratio');
+    wlratioEl.textContent = wlratio[0] + "-" + wlratio[1] + "    " + oppwlratio[0] + "-" + oppwlratio[1];
+  }
+
+  async getWinLoss(username){
+    let wlratio = [];
+    try {
+      const response = await fetch('/api/user/wlratio/' + username);
+      wlratio = await response.json();
+    } catch (e) {
+      console.log(e);
+      wlratio = [0,0];
+    }
+    return wlratio;
   }
 
   printError(message){
@@ -272,12 +429,11 @@ class Game {
   }
 
   endTurn(){
-    this.checkForWin();
     this.yourTurn = false;
-
     this.updateDatabase();
-
     this.printError(this.oppName + "'s turn");
+    const over = this.checkForWin();
+    //Notify other player through Websocket
   }
 
   async updateDatabase(){

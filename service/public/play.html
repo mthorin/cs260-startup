@@ -42,6 +42,7 @@
 
     <main class="container-fluid bg-secondary text-center">
       <h1 class="players">Player 1 vs. Player 2</h1>
+      <h1 class="wlratio">0-0    0-0</h1>
 
       <img id="left-big-1" src="bluecircle.png" width="100">
       <img id="1,1" class="board" src="empty.png" width="100" role="button" onclick="game.pressBoard(this)">
@@ -71,6 +72,7 @@
       <br>
       <br>
       <p class="turn-info">Your Turn</p>
+      <button type="button" class="btn btn-primary" onclick="game.forfeit()">Forfeit</button>
     </main>
 
     <footer class="bg-dark text-white-50">

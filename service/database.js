@@ -23,6 +23,11 @@ function getUser(username) {
   return userCollection.findOne({ username: username });
 }
 
+async function getWinLoss(username) {
+  const user = await userCollection.findOne({ username: username });
+  return [user.win, user.loss];
+}
+
 function getUserByToken(token) {
   return userCollection.findOne({ token: token });
 }
@@ -44,9 +49,6 @@ async function createUser(username, password) {
 }
 
 async function getGames(username) {
-  //Comment put later
-  username = 'user';
-  //
   const query = { $or: [{ player1: username }, { player2: username }] };
   const cursor = gameCollection.find(query);
   const games = await cursor.toArray();
@@ -71,33 +73,14 @@ async function getGames(username) {
 
 async function getGameState(username, opponent) {
   const query = { player1: { $in: [username, opponent] }, player2: { $in: [username, opponent] } };
-  const cursor = gameCollection.find(query);
-  let games = await cursor.toArray();
+  const game = await gameCollection.findOne(query);
 
-  console.log(games);
+  console.log(game);
 
-  //Comment out later
-  if (games.length === 0){
-    const newQuery = { player1: { $in: ['user', opponent] }, player2: { $in: ['user', opponent] } };
-    const newCursor = gameCollection.find(newQuery);
-    games = await newCursor.toArray();
-
-    console.log(games);
-    if (games[0].player1 === 'user'){
-      games[0].player1 = username;
-    }
-    if (games[0].player2 === 'user'){
-      games[0].player2 = username;
-    }
-    if (games[0].turn === 'user'){
-      games[0].turn = username;
-    }
-    delete games[0]._id;
-    await gameCollection.insertOne(games[0]);
+  if (!game){
+    return game;
   }
-  //
 
-  const game = games[0];
   let yourTurn = false;
   const board = game.board;
   let currentPieces = [];
@@ -111,6 +94,7 @@ async function getGameState(username, opponent) {
   } else {
     currentPieces = game.player2Pieces;
     oppCurrentPieces = game.player1Pieces;
+    game.board = switchBoardNumbers(game.board);
   }
 
   const gameState = {yourTurn: yourTurn, board: board, currentPieces: currentPieces, oppCurrentPieces, oppCurrentPieces};
@@ -120,9 +104,7 @@ async function getGameState(username, opponent) {
 
 async function updateGameState(username, opponent, gameState) {
   const query = { player1: { $in: [username, opponent] }, player2: { $in: [username, opponent] } };
-  const cursor = gameCollection.find(query);
-  const games = await cursor.toArray();
-  game = games[0];
+  const game = await gameCollection.findOne(query);
 
   game.board = gameState.board;
   game.turn = opponent;
@@ -132,9 +114,77 @@ async function updateGameState(username, opponent, gameState) {
   } else {
     game.player2Pieces = gameState.currentPieces;
     game.player1Pieces = gameState.oppCurrentPieces;
+    game.board = switchBoardNumbers(game.board);
   }
 
   await gameCollection.findOneAndReplace(query, game);
 }
 
-module.exports = { getGames, getGameState, updateGameState , getUser, getUserByToken, createUser};
+function switchBoardNumbers(board) {
+  for (let i = 0; i < 3; i++){
+    for (let j = 0; j < 3; j++){
+      for (let k = 0; k < 3; k++){
+        if (board[i][j][k] === 1){
+          board[i][j][k] = 2;
+        } else if (board[i][j][k] === 2){
+          board[i][j][k] = 1;
+        }
+      }
+    }
+  }
+  return board;
+}
+
+async function newGame(username, opponent) {
+  const game = {
+    player1: username,
+    player2: opponent,
+    turn: username,
+    board: [
+      [[0,0,0],
+       [0,0,0],
+       [0,0,0]],
+      [[0,0,0],
+       [0,0,0],
+       [0,0,0]],
+      [[0,0,0],
+       [0,0,0],
+       [0,0,0]]],
+    player1Pieces: [1,1,1,1,1,1],
+    player2Pieces: [1,1,1,1,1,1]
+  };
+
+  await gameCollection.insertOne(game);
+}
+
+async function addWin(username) {
+  let user = await userCollection.findOne({ username: username });
+  console.log(user);
+  user.win++;
+  await userCollection.findOneAndReplace({ username: username }, user);
+}
+
+async function addLoss(username) {
+  let user = await userCollection.findOne({ username: username });
+  console.log(user);
+  user.loss++;
+  await userCollection.findOneAndReplace({ username: username }, user);
+}
+
+async function removeGame(username, opponent){
+  await gameCollection.deleteOne({ player1: { $in: [username, opponent] }, player2: { $in: [username, opponent] } });
+}
+
+module.exports = { 
+  getGames, 
+  getGameState, 
+  updateGameState, 
+  getUser, 
+  getUserByToken, 
+  createUser, 
+  newGame, 
+  addWin, 
+  addLoss, 
+  removeGame,
+  getWinLoss,
+};

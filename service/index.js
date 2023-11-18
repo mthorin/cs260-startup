@@ -67,16 +67,55 @@ var secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
 secureApiRouter.use(async (req, res, next) => {
-  console.log("Authorizing...");
+  //console.log("Authorizing...");
   authToken = req.cookies[authCookieName];
-  console.log(req.cookies);
+  //console.log(req.cookies);
   const user = await DB.getUserByToken(authToken);
   if (user) {
     next();
   } else {
-    console.log("Unauthorized")
+    //console.log("Unauthorized")
     res.status(401).send({ msg: 'Unauthorized' });
   }
+});
+
+secureApiRouter.get('/user/wlratio/:username', async (req, res) => {
+    const wlratio = await DB.getWinLoss(req.params.username);
+    console.log(wlratio);
+    res.send(wlratio);
+});
+
+secureApiRouter.post('/user/win', async (req, res) => {
+  DB.addWin(req.body.username);
+  res.send("Win added");
+});
+
+secureApiRouter.post('/user/loss', async (req, res) => {
+  DB.addLoss(req.body.username);
+  res.send("Loss added");
+});
+
+secureApiRouter.post('/game/end', async (req, res) => {
+  console.log("Game ending between " + req.body.player1 + " and " + req.body.player2 + ".");
+  DB.removeGame(req.body.player1, req.body.player2);
+  res.send("Game removed");
+});
+
+//NewGame
+secureApiRouter.post('/game/new', async (req, res) => {
+  const user = await DB.getUser(req.body.opponent);
+  if (user) {
+    const game = await DB.getGameState(req.body.username, req.body.opponent);
+    if (game) {
+      res.status(404).send({ msg: 'Already playing aginst this Player' });
+      return;
+    }
+    DB.newGame(req.body.username, req.body.opponent);
+    console.log("Creating a new game between " + req.body.username + " and " + req.body.opponent + ".");
+    res.send('Good');
+    return;
+  }
+  res.status(404).send({ msg: 'Unknown Player' });
 });
 
 // GetGames
@@ -112,7 +151,7 @@ app.use((_req, res) => {
 
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    secure: true,
+    //secure: true,
     httpOnly: true,
     sameSite: 'strict',
   });
