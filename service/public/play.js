@@ -5,6 +5,7 @@ class Game {
   currentPieces;
   oppCurrentPieces;
   oppName;
+  socket;
 
   constructor() {
     this.yourTurn = true;
@@ -32,8 +33,15 @@ class Game {
 
     const playersEl = document.querySelector('.players');
     playersEl.textContent = this.getPlayerName() + " vs. " +  this.oppName;
+    
+    this.initialSetUp();
+    
+  }
 
-    this.getGameInfo();
+  async initialSetUp(){
+    this.configureWebSocket();
+    await this.getGameInfo();
+    this.linkToOpponent();
   }
 
   getPlayerName() {
@@ -132,18 +140,20 @@ class Game {
 
     if(player1Win && !player2Win){
       this.winFor(1);
-      return true;
+      return 1;
     } else if (player2Win && !player1Win){
       this.winFor(2);
-      return true;
+      return 2;
     }
-    return false;
+    return 0;
   }
 
   forfeit(){
-    this.yourTurn = false;
-    this.winFor(2);
-    //Websocket notify other player
+    if (this.yourTurn){
+      this.yourTurn = false;
+      this.winFor(2);
+      this.sendMove(true, null, this.oppName);
+    }
   }
 
   winFor(playerNum){
@@ -235,6 +245,7 @@ class Game {
   }
 
   setGame(gameInfo) {
+    this.game_id = gameInfo.game_id;
     this.yourTurn = gameInfo.yourTurn;
     this.board = gameInfo.board;
     this.currentPieces = gameInfo.currentPieces;
@@ -246,6 +257,8 @@ class Game {
 
     if(!this.yourTurn){
       this.printError(this.oppName + "'s Turn");
+    } else {
+      this.resetError();
     }
   }
 
@@ -428,19 +441,25 @@ class Game {
     this.endTurn();
   }
 
-  endTurn(){
+  async endTurn(){
     this.yourTurn = false;
-    this.updateDatabase();
+    await this.updateDatabase();
     this.printError(this.oppName + "'s turn");
     const over = this.checkForWin();
-    //Notify other player through Websocket
+    if (over === 1){
+      this.sendMove(true, this.board, this.getPlayerName());
+    } else if (over === 2){
+      this.sendMove(true, this.board, this.oppName);
+    } else {
+      this.sendMove(false, null, null);
+    }
   }
 
   async updateDatabase(){
     const currGameInfo = {yourTurn: this.yourTurn, board: this.board, currentPieces: this.currentPieces, 
       oppCurrentPieces: this.oppCurrentPieces};
 
-    fetch('/api/game/update/' + this.getPlayerName() + '/' + this.oppName, {
+    await fetch('/api/game/update/' + this.getPlayerName() + '/' + this.oppName, {
         method: 'POST',
         body: JSON.stringify(currGameInfo),
         headers: {'Content-type': 'application/json'},
@@ -649,6 +668,65 @@ class Game {
       case 5:
         return "left-sml-3";
     }
+  }
+
+  //Websocket
+  configureWebSocket() {
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    this.socket.onmessage = async (event) => {
+      const move = JSON.parse(await event.data.text());
+      if (move.gameOver) {
+        this.processGameEnd(move.board, move.winner);
+      } else {
+        this.getGameInfo();
+      }
+    };
+  }
+
+  async linkToOpponent(){
+    const linkPacket = {
+      type: "link",
+      game_id: this.game_id,
+    };
+    await new Promise(r => setTimeout(r, 2000));
+    this.socket.send(JSON.stringify(linkPacket));
+  }
+
+  processGameEnd(board, winner) {
+    this.yourTurn = false;
+
+    if (winner === this.oppName){
+      this.printError(this.oppName + " Wins!");
+    } else {
+      this.printError("You Win!");
+    }
+
+    if (board){
+      for (let i = 0; i < 3; i++){
+        for (let j = 0; j < 3; j++){
+          for (let k = 0; k < 3; k++){
+            if (board[i][j][k] === 1){
+              board[i][j][k] = 2;
+            } else if (board[i][j][k] === 2){
+              board[i][j][k] = 1;
+            }
+          }
+        }
+      }
+      this.board = board;
+      this.updateBoard();
+    }
+  }
+
+  sendMove(gameOver, board, winner) {
+    const move = {
+      type: "move",
+      gameOver: gameOver,
+      board: board,
+      winner: winner,
+    };
+    this.socket.send(JSON.stringify(move));
   }
 }
 

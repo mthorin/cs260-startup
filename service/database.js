@@ -75,8 +75,6 @@ async function getGameState(username, opponent) {
   const query = { player1: { $in: [username, opponent] }, player2: { $in: [username, opponent] } };
   const game = await gameCollection.findOne(query);
 
-  console.log(game);
-
   if (!game){
     return game;
   }
@@ -97,7 +95,13 @@ async function getGameState(username, opponent) {
     game.board = switchBoardNumbers(game.board);
   }
 
-  const gameState = {yourTurn: yourTurn, board: board, currentPieces: currentPieces, oppCurrentPieces, oppCurrentPieces};
+  const gameState = {
+    game_id: game._id,
+    yourTurn: yourTurn, 
+    board: board, 
+    currentPieces: currentPieces, 
+    oppCurrentPieces, oppCurrentPieces,
+  };
 
   return gameState;
 }
@@ -159,14 +163,12 @@ async function newGame(username, opponent) {
 
 async function addWin(username) {
   let user = await userCollection.findOne({ username: username });
-  console.log(user);
   user.win++;
   await userCollection.findOneAndReplace({ username: username }, user);
 }
 
 async function addLoss(username) {
   let user = await userCollection.findOne({ username: username });
-  console.log(user);
   user.loss++;
   await userCollection.findOneAndReplace({ username: username }, user);
 }

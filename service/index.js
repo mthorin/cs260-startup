@@ -3,6 +3,7 @@ const app = express();
 const DB = require('./database.js');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
+const { peerProxy } = require('./peerProxy.js');
 
 const authCookieName = 'token';
 
@@ -15,6 +16,8 @@ app.use(cookieParser());
 
 // Serve up the frontend static content hosting
 app.use(express.static('public'));
+
+app.set('trust proxy', true);
 
 // Router for service endpoints
 const apiRouter = express.Router();
@@ -67,21 +70,17 @@ var secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
 secureApiRouter.use(async (req, res, next) => {
-  //console.log("Authorizing...");
   authToken = req.cookies[authCookieName];
-  //console.log(req.cookies);
   const user = await DB.getUserByToken(authToken);
   if (user) {
     next();
   } else {
-    //console.log("Unauthorized")
     res.status(401).send({ msg: 'Unauthorized' });
   }
 });
 
 secureApiRouter.get('/user/wlratio/:username', async (req, res) => {
     const wlratio = await DB.getWinLoss(req.params.username);
-    console.log(wlratio);
     res.send(wlratio);
 });
 
@@ -96,7 +95,6 @@ secureApiRouter.post('/user/loss', async (req, res) => {
 });
 
 secureApiRouter.post('/game/end', async (req, res) => {
-  console.log("Game ending between " + req.body.player1 + " and " + req.body.player2 + ".");
   DB.removeGame(req.body.player1, req.body.player2);
   res.send("Game removed");
 });
@@ -111,7 +109,6 @@ secureApiRouter.post('/game/new', async (req, res) => {
       return;
     }
     DB.newGame(req.body.username, req.body.opponent);
-    console.log("Creating a new game between " + req.body.username + " and " + req.body.opponent + ".");
     res.send('Good');
     return;
   }
@@ -121,14 +118,12 @@ secureApiRouter.post('/game/new', async (req, res) => {
 // GetGames
 secureApiRouter.get('/game/list/:username', async (req, res) => {
     const games = await DB.getGames(req.params.username);
-    console.log("Loaded games for " + req.params.username);
     await res.send(games);
 });
 
 // GetGameState
 secureApiRouter.get('/game/load/:username/:opponent', async (req, res) => {
     const gameState = await DB.getGameState(req.params.username, req.params.opponent);
-    console.log("Loaded game between " + req.params.username + " and " + req.params.opponent);
     await res.send(gameState);
 });
 
@@ -136,7 +131,6 @@ secureApiRouter.get('/game/load/:username/:opponent', async (req, res) => {
 secureApiRouter.post('/game/update/:username/:opponent', async (req, res) => {
     try{
       await DB.updateGameState(req.params.username, req.params.opponent, req.body);
-      console.log("Game between " + req.params.username + " and " + req.params.opponent + " saved.")
       res.send("Updated successfully");
     } catch {
       console.log("Save failed.")
@@ -151,12 +145,14 @@ app.use((_req, res) => {
 
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    //secure: true,
+    secure: true,
     httpOnly: true,
     sameSite: 'strict',
   });
 }
 
-app.listen(port, () => {
+const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+peerProxy(httpService);
