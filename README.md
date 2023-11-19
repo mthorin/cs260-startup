@@ -81,5 +81,5 @@ I am going to use the required technologies in the following ways.
 
 - **User registration** - Creates a new account in the database.
 - **User authentication** - Stores the votes under the same user if the user already exists.
-- **Use MongoDB to store credentials** - Storesthe user and win loss record.
+- **Use MongoDB to store credentials** - Stores the user and win loss record.
 - **Restricts functionality** - Select and Play screens cannot be accessed unless logged in.
