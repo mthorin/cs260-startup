@@ -83,3 +83,10 @@ I am going to use the required technologies in the following ways.
 - **User authentication** - Stores the votes under the same user if the user already exists.
 - **Use MongoDB to store credentials** - Stores the user and win loss record.
 - **Restricts functionality** - Select and Play screens cannot be accessed unless logged in.
+
+## WebSocket deliverable
+
+- Backend makes WebSocket connection - Keeps track of connections by game ID to share game information to proper users.
+- Frontend makes WebSocket connection - ✅
+- Data sent over WebSocket - When a move is made, the other player is updated by WebSocket.
+- Displayed in the application interface - Turn information and board updates when WebSocket communitcation is received.
