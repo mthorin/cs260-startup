@@ -25,14 +25,18 @@ app.use(`/api`, apiRouter);
 
 // CreateAuth
 apiRouter.post('/auth/create', async (req, res) => {
-  if (await DB.getUser(req.body.username)) {
-    res.status(409).send({ msg: 'Existing user' });
+  if (req.body.username === ''  || req.body.password === ''){
+    res.status(409).send({ msg: 'Invalid username/password' });
   } else {
-    const user = await DB.createUser(req.body.username, req.body.password);
-    setAuthCookie(res, user.token);
-    res.send({
-      id: user._id,
-    });
+    if (await DB.getUser(req.body.username)) {
+      res.status(409).send({ msg: 'Existing user' });
+    } else {
+      const user = await DB.createUser(req.body.username, req.body.password);
+      setAuthCookie(res, user.token);
+      res.send({
+        id: user._id,
+      });
+    }
   }
 });
 
