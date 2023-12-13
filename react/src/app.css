@@ -9,6 +9,7 @@
 
 header {
   flex: 0 80px;
+  font-family: Gabarito;
 }
 
 main {
@@ -17,10 +18,16 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  font-family: Gabarito;
 }
 
 footer {
   flex: 0 30px;
+  font-family: Gabarito;
+}
+
+h1 {
+  font-family: Gabarito;
 }
 
 menu {
@@ -29,19 +36,23 @@ menu {
   /*  overwrite Bootstrap so the menu does not wrap */
   flex-direction: row !important;
   list-style: none;
+  font-family: Gabarito;
 }
 
 .navbar-brand {
   padding-left: 0.3em;
   border-bottom: solid rgb(182, 182, 182) thin;
+  font-family: Gabarito;
 }
 
 menu .nav-item {
   padding: 0 0.3em;
+  font-family: Gabarito;
 }
 
 footer a {
   float: right;
+  font-family: Gabarito;
 }
 
 @media (max-height: 600px) {
@@ -67,6 +78,7 @@ footer a {
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 3px;
+  font-family: Gabarito;
 }
 
 #login {
@@ -77,4 +89,5 @@ footer a {
   color: rgb(197, 201, 230);
   font-size: 1.5em;
   padding: 0.5em;
+  font-family: Gabarito;
 }

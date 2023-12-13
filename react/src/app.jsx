@@ -4,10 +4,15 @@ import { Login } from './login/login.jsx';
 import { Play } from './play/play.jsx';
 import { Games } from './games/games.jsx';
 import { NewGame } from './newgame/newgame.jsx';
+import { AuthState } from './login/authState.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 function App() {
+    const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
+    const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
+    const [authState, setAuthState] = React.useState(currentAuthState);
+
     return (
         <BrowserRouter>
             <div className='body bg-dark text-light'>
@@ -22,21 +27,27 @@ function App() {
                         Login
                     </NavLink>
                     </li>
-                    <li className='nav-item'>
-                    <NavLink className='nav-link' to='games'>
-                        Games
-                    </NavLink>
-                    </li>
-                    <li className='nav-item'>
-                    <NavLink className='nav-link' to='play'>
-                        Current Game
-                    </NavLink>
-                    </li>
-                    <li className='nav-item'>
-                    <NavLink className='nav-link' to='newgame'>
-                        New Game
-                    </NavLink>
-                    </li>
+                    {authState === AuthState.Authenticated && (
+                        <li className='nav-item'>
+                        <NavLink className='nav-link' to='games'>
+                            Games
+                        </NavLink>
+                        </li>
+                    )}
+                    {authState === AuthState.Authenticated && (
+                        <li className='nav-item'>
+                        <NavLink className='nav-link' to='play'>
+                            Current Game
+                        </NavLink>
+                        </li>
+                    )}
+                    {authState === AuthState.Authenticated && (
+                        <li className='nav-item'>
+                        <NavLink className='nav-link' to='newgame'>
+                            New Game
+                        </NavLink>
+                        </li>
+                    )}
                 </menu>
                 <div className="player">
                     <span className="player-name">Mystery player</span>
@@ -45,7 +56,20 @@ function App() {
             </header>
         
             <Routes>
-                <Route path='/' element={<Login />} exact />
+                <Route
+                    path='/'
+                    element={
+                    <Login
+                        userName={userName}
+                        authState={authState}
+                        onAuthChange={(userName, authState) => {
+                        setAuthState(authState);
+                        setUserName(userName);
+                        }}
+                    />
+                    }
+                    exact
+                />
                 <Route path='/play' element={<Play />} />
                 <Route path='/games' element={<Games />} />
                 <Route path='/newgame' element={<NewGame />} />
