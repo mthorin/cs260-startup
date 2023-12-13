@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-width: 375px;
+  font-family: Gabarito;
+}
+
+header {
+  flex: 0 80px;
+}
+
+main {
+  flex: 1 calc(100vh - 110px);
+  justify-content: center;
+}
+
+footer {
+  flex: 0 30px;
+}
+
+menu {
+  flex: 1;
+  display: flex;
+  /*  overwrite Bootstrap so the menu does not wrap */
+  flex-direction: row !important;
+  list-style: none;
+}
+
+.navbar-brand {
+  padding-left: 0.3em;
+  border-bottom: solid rgb(182, 182, 182) thin;
+}
+
+menu .nav-item {
+  padding: 0 0.3em;
+}
+
+footer a {
+  float: right;
+}
+
+@media (max-height: 600px) {
+  header {
+    display: none;
+  }
+  footer {
+    display: none;
+  }
+  main {
+    flex: 1 100vh;
+  }
+}
+
+.logout {
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+.board {
+  border: 2px solid black;
+}
+
+.players {
+  padding: 20px;
+}
