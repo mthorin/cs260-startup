@@ -1,51 +1,70 @@
 import React from 'react';
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { Login } from './login/login.jsx';
+import { Play } from './play/play.jsx';
+import { Games } from './games/games.jsx';
+import { NewGame } from './newgame/newgame.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-export default function App() {
+function App() {
     return (
-        <div className='body bg-dark text-light'>
-        <header className='container-fluid'>
-            <nav className='navbar fixed-top navbar-dark'>
-            <div className='navbar-brand'>
-                Tic Tac Toe
+        <BrowserRouter>
+            <div className='body bg-dark text-light'>
+            <header className='container-fluid'>
+                <nav className='navbar fixed-top navbar-dark'>
+                <div className='navbar-brand'>
+                    Tic Tac Toe
+                </div>
+                <menu className='navbar-nav'>
+                    <li className='nav-item'>
+                    <NavLink className='nav-link' to=''>
+                        Login
+                    </NavLink>
+                    </li>
+                    <li className='nav-item'>
+                    <NavLink className='nav-link' to='games'>
+                        Games
+                    </NavLink>
+                    </li>
+                    <li className='nav-item'>
+                    <NavLink className='nav-link' to='play'>
+                        Current Game
+                    </NavLink>
+                    </li>
+                    <li className='nav-item'>
+                    <NavLink className='nav-link' to='newgame'>
+                        New Game
+                    </NavLink>
+                    </li>
+                </menu>
+                <div className="player">
+                    <span className="player-name">Mystery player</span>
+                </div>
+                </nav>
+            </header>
+        
+            <Routes>
+                <Route path='/' element={<Login />} exact />
+                <Route path='/play' element={<Play />} />
+                <Route path='/games' element={<Games />} />
+                <Route path='/newgame' element={<NewGame />} />
+                <Route path='*' element={<NotFound />} />
+            </Routes>
+        
+            <footer className='bg-dark text-white-50'>
+                <div className='container-fluid'>
+                <span className='text-reset'>Matthew Thorin</span>
+                <a className="text-reset" href="https://github.com/mthorin/startup">Github</a>
+                </div>
+            </footer>
             </div>
-            <menu className='navbar-nav'>
-                <li className='nav-item'>
-                <a className='nav-link' href='index.html'>
-                    Home
-                </a>
-                </li>
-                <li className='nav-item'>
-                <a className='nav-link' href='select.html'>
-                    Games
-                </a>
-                </li>
-                <li className='nav-item'>
-                <a className='nav-link' href='play.html'>
-                    Current Game
-                </a>
-                </li>
-                <li className='nav-item'>
-                <a className='nav-link' href='newgame.html'>
-                    New Game
-                </a>
-                </li>
-            </menu>
-            <div class="player">
-                <span class="player-name">Mystery player</span>
-            </div>
-            </nav>
-        </header>
-    
-        <main>App components go here</main>
-    
-        <footer className='bg-dark text-white-50'>
-            <div className='container-fluid'>
-            <span className='text-reset'>Matthew Thorin</span>
-            <a className="text-reset" href="https://github.com/mthorin/startup">Github</a>
-            </div>
-        </footer>
-        </div>
+        </BrowserRouter>
     );
 }
+
+function NotFound() {
+    return <main className='container-fluid bg-secondary text-center'>404: Return to sender. Address unknown.</main>;
+}
+
+export default App;

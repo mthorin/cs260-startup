@@ -50,7 +50,7 @@ I am going to use the required technologies in the following ways.
 ### CSS deliverable
 
 - **Header, Footer, and Main** - Distinct style
-- **Navigation Elements** - Colors change on hover, no underline 
+- **Navigation Elements** - Colors change on hover, no underline
 - **Responsive to Window Resizing** - Header and footer move, and disappear appropriately
 - **Application Elements** - Used good contrast, good layout for game select screen
 - **Application Text Content**  - Consistent fonts
@@ -86,7 +86,14 @@ I am going to use the required technologies in the following ways.
 
 ## WebSocket deliverable
 
-- Backend makes WebSocket connection - Keeps track of connections by game ID to share game information to proper users.
-- Frontend makes WebSocket connection - ✅
-- Data sent over WebSocket - When a move is made, the other player is updated by WebSocket.
-- Displayed in the application interface - Turn information and board updates when WebSocket communitcation is received.
+- **Backend makes WebSocket connection** - Keeps track of connections by game ID to share game information to proper users.
+- **Frontend makes WebSocket connection** - ✅
+- **Data sent over WebSocket** - When a move is made, the other player is updated by WebSocket.
+- **Displayed in the application interface** - Turn information and board updates when WebSocket communication is received.
+
+## React deliverable
+
+- **Bundled using WebPack and Babel** - 
+- **Multiple functional react components** -
+- **React Router** - Uses react to route different pages to web browser
+- **React Hooks** -
