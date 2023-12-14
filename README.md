@@ -93,7 +93,7 @@ I am going to use the required technologies in the following ways.
 
 ## React deliverable
 
-- **Bundled using WebPack and Babel** - 
-- **Multiple functional react components** -
+- **Bundled using WebPack and Babel** - ✅
+- **Multiple functional react components** - Converted all the pages into react components
 - **React Router** - Uses react to route different pages to web browser
-- **React Hooks** -
+- **React Hooks** - useState, useEffect, and useNavigate used throughout the components

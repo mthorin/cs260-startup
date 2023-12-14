@@ -127,6 +127,7 @@ secureApiRouter.post('/game/new', async (req, res) => {
 // GetGames
 secureApiRouter.get('/game/list/:username', async (req, res) => {
     const games = await DB.getGames(req.params.username);
+    //console.log("Got games for " + req.params.username);
     await res.send(games);
 });
 
