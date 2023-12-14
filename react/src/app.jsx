@@ -50,7 +50,7 @@ function App() {
                     )}
                 </menu>
                 <div className="player">
-                    <span className="player-name">Mystery player</span>
+                    <span className="player-name">{ userName }</span>
                 </div>
                 </nav>
             </header>

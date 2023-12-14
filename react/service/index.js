@@ -83,21 +83,25 @@ secureApiRouter.use(async (req, res, next) => {
   }
 });
 
+//GetWLRatio
 secureApiRouter.get('/user/wlratio/:username', async (req, res) => {
     const wlratio = await DB.getWinLoss(req.params.username);
     res.send(wlratio);
 });
 
+//Log win
 secureApiRouter.post('/user/win', async (req, res) => {
   DB.addWin(req.body.username);
   res.send("Win added");
 });
 
+//Log loss
 secureApiRouter.post('/user/loss', async (req, res) => {
   DB.addLoss(req.body.username);
   res.send("Loss added");
 });
 
+//End game
 secureApiRouter.post('/game/end', async (req, res) => {
   DB.removeGame(req.body.player1, req.body.player2);
   res.send("Game removed");
@@ -113,6 +117,7 @@ secureApiRouter.post('/game/new', async (req, res) => {
       return;
     }
     DB.newGame(req.body.username, req.body.opponent);
+    //console.log("New game between " + req.body.username + " and " + req.body.opponent);
     res.send('Good');
     return;
   }
@@ -149,7 +154,7 @@ app.use((_req, res) => {
 
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    //secure: true,
+    //secure: true,  //Comment out for local testing
     httpOnly: true,
     sameSite: 'strict',
   });
