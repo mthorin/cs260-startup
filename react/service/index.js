@@ -134,6 +134,7 @@ secureApiRouter.get('/game/list/:username', async (req, res) => {
 // GetGameState
 secureApiRouter.get('/game/load/:username/:opponent', async (req, res) => {
     const gameState = await DB.getGameState(req.params.username, req.params.opponent);
+    //console.log("Loaded game for " + req.params.username);
     await res.send(gameState);
 });
 
@@ -155,7 +156,7 @@ app.use((_req, res) => {
 
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    //secure: true,  //Comment out for local testing
+    secure: true,  //Comment out for local testing
     httpOnly: true,
     sameSite: 'strict',
   });

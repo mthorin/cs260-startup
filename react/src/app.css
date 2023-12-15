@@ -14,8 +14,7 @@ header {
 
 main {
   flex: 1 calc(100vh - 110px);
-  display: flex;
-  flex-direction: column;
+  display: block;
   align-items: center;
   justify-content: space-around;
   font-family: Gabarito;
